@@ -9,19 +9,52 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FormController extends Controller
 {
+    public function dashboard()
+    {
+        $accountId = auth()->user()->account_id;
+        $formsCount = Form::where('account_id', $accountId)->count();
+        $submissionsCount = Form::where('account_id', $accountId)
+            ->join('form_versions', 'forms.published_version_id', '=', 'form_versions.id')
+            ->join('submissions', 'form_versions.id', '=', 'submissions.form_version_id')
+            ->count();
+
+        return view('admin.statistics', compact('formsCount', 'submissionsCount'));
+    }
+
     public function index()
     {
         $accountId = auth()->user()->account_id;
-        $forms = Form::where('account_id', $accountId)->with('publishedVersion')->get();
-        
-        if ($forms->isEmpty()) {
-            $form = Form::create([
-                'account_id' => $accountId,
-                'title' => 'My First Form'
-            ]);
-            $forms = collect([$form]);
+        $forms = Form::where('account_id', $accountId)->get();
+        return view('admin.forms', compact('forms'));
+    }
+
+    public function show(Form $form)
+    {
+        $accountId = auth()->user()->account_id;
+        if ($form->account_id !== $accountId) {
+            abort(403);
         }
-        return view('admin.dashboard', compact('forms'));
+        
+        $forms = Form::where('account_id', $accountId)->get();
+        $form->load('publishedVersion');
+        
+        return view('admin.forms', compact('forms', 'form'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        $form = Form::create([
+            'account_id' => auth()->user()->account_id,
+            'title' => $validated['title'],
+            'description' => $validated['description']
+        ]);
+
+        return redirect()->route('admin.forms.show', $form->id);
     }
 
     public function publishVersion(Request $request, Form $form)

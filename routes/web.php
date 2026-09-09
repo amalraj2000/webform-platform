@@ -15,17 +15,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (auth()->user()->isSuperAdmin()) {
             return redirect('/superadmin/dashboard');
         }
-        return redirect('/admin/forms');
+        return redirect('/admin/dashboard');
     })->name('dashboard');
 
     Route::prefix('superadmin')->group(function () {
         Route::get('/dashboard', [SuperAdminController::class, 'dashboard']);
+        Route::get('/accounts', [SuperAdminController::class, 'accounts']);
         Route::get('/accounts/{account}', [SuperAdminController::class, 'showAccount']);
         Route::get('/forms/{form}', [SuperAdminController::class, 'showForm']);
     });
 
     Route::prefix('admin')->group(function () {
-        Route::get('/forms', [FormController::class, 'index']);
+        Route::get('/dashboard', [FormController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/forms', [FormController::class, 'index'])->name('admin.forms.index');
+        Route::post('/forms', [FormController::class, 'store'])->name('admin.forms.store');
+        Route::get('/forms/{form}', [FormController::class, 'show'])->name('admin.forms.show');
         Route::post('/forms/{form}/publish', [FormController::class, 'publishVersion']);
         Route::get('/forms/{form}/submissions', [FormController::class, 'getSubmissions']);
         Route::get('/forms/{form}/export', [FormController::class, 'export']);

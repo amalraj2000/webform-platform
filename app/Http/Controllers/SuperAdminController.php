@@ -21,17 +21,27 @@ class SuperAdminController extends Controller
         return view('superadmin.dashboard', compact('accounts', 'totalSubmissions'));
     }
 
+    public function accounts()
+    {
+        if (!auth()->user()->isSuperAdmin()) abort(403);
+        $accounts = Account::withCount('forms')->get();
+        return view('superadmin.account', compact('accounts'));
+    }
+
     public function showAccount(Account $account)
     {
         if (!auth()->user()->isSuperAdmin()) abort(403);
+        $accounts = Account::withCount('forms')->get();
         $account->load('forms');
-        return view('superadmin.account', compact('account'));
+        return view('superadmin.account', compact('accounts', 'account'));
     }
 
     public function showForm(Form $form)
     {
         if (!auth()->user()->isSuperAdmin()) abort(403);
+        $accounts = Account::withCount('forms')->get();
         $form->load('publishedVersion.submissions');
-        return view('superadmin.form', compact('form'));
+        $account = $form->account;
+        return view('superadmin.form', compact('accounts', 'account', 'form'));
     }
 }

@@ -10,7 +10,13 @@ class Form extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['account_id', 'uuid', 'title', 'published_version_id'];
+    protected $fillable = [
+        'uuid',
+        'account_id',
+        'title',
+        'description',
+        'published_version_id',
+    ];
 
     protected static function boot()
     {

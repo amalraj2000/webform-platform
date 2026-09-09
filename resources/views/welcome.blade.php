@@ -9,26 +9,26 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .hero-bg {
-            background-color: #ffffff;
-            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-        }
-    </style>
-</head>
-<body class="antialiased bg-gray-50 text-gray-800">
-    <div class="min-h-screen flex flex-col">
-        <!-- Navigation -->
-        <nav class="w-full py-6 px-8 flex justify-between items-center absolute top-0 z-10">
-            <div class="flex items-center gap-2">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                <span class="text-2xl font-extrabold text-white tracking-tight">Mailercloud</span>
-            </div>
+        <!-- Favicon -->
+        <link rel="icon" href="{{ asset('images/mailerclound-logo-2.jpeg') }}">
+        
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>
+            body { font-family: 'Inter', sans-serif; }
+            .hero-bg {
+                background-color: #ffffff;
+                background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            }
+        </style>
+    </head>
+    <body class="antialiased bg-gray-50 text-gray-800">
+        <div class="min-h-screen flex flex-col">
+            <!-- Navigation -->
+            <nav class="w-full py-6 px-8 flex justify-between items-center absolute top-0 z-10">
+                <div class="flex items-center gap-2">
+                    <img src="{{ asset('images/mailercloud-logo.svg') }}" alt="Mailercloud Logo" height="32" class="brightness-0 invert">
+                </div>
             
             <div class="flex items-center gap-4">
                 @if (Route::has('login'))
