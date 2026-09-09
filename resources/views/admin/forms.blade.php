@@ -112,8 +112,16 @@
                         const container = document.getElementById(`schema-builder-{{ $form->id }}`);
                         if(!container) return;
                         
+                        // Build options for condition field dropdown
+                        let conditionFieldOptions = '<option value="">-- None --</option>';
+                        schema.forEach(f => {
+                            conditionFieldOptions += `<option value="${f.name}">${f.label} (${f.name})</option>`;
+                        });
+
                         container.innerHTML = '';
                         schema.forEach((field, index) => {
+                            let fieldOptions = conditionFieldOptions.replace(`value="${field.condition_field}"`, `value="${field.condition_field}" selected`);
+                            
                             container.innerHTML += `
                                 <div class="row g-3 p-3 mb-3 bg-white border rounded position-relative">
                                     <div class="position-absolute top-0 end-0 p-2" style="width: auto; z-index: 10;">
@@ -128,7 +136,18 @@
                                         <label class="form-label small fw-bold text-muted mb-1">Label (Public)</label>
                                         <input type="text" value="${field.label}" onchange="updateField(${index}, 'label', this.value)" class="form-control form-control-sm">
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold text-muted mb-1">Help Text</label>
+                                        <input type="text" value="${field.help_text || ''}" onchange="updateField(${index}, 'help_text', this.value)" class="form-control form-control-sm" placeholder="Optional hint">
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end pb-1">
+                                        <div class="form-check">
+                                            <input type="checkbox" ${field.required ? 'checked' : ''} onchange="updateField(${index}, 'required', this.checked)" class="form-check-input" id="req-{{ $form->id }}-${index}">
+                                            <label class="form-check-label small fw-bold" for="req-{{ $form->id }}-${index}">Required</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-3 mt-2">
                                         <label class="form-label small fw-bold text-muted mb-1">Type</label>
                                         <select onchange="updateField(${index}, 'type', this.value)" class="form-select form-select-sm">
                                             <option value="text" ${field.type === 'text' ? 'selected' : ''}>Text</option>
@@ -140,19 +159,24 @@
                                             <option value="checkbox" ${field.type === 'checkbox' ? 'selected' : ''}>Checkbox</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 d-flex align-items-end pb-1">
-                                        <div class="form-check">
-                                            <input type="checkbox" ${field.required ? 'checked' : ''} onchange="updateField(${index}, 'required', this.checked)" class="form-check-input" id="req-{{ $form->id }}-${index}">
-                                            <label class="form-check-label small fw-bold" for="req-{{ $form->id }}-${index}">Required</label>
-                                        </div>
-                                    </div>
 
                                     ${['select', 'radio'].includes(field.type) ? `
-                                    <div class="col-12 mt-2">
+                                    <div class="col-md-9 mt-2">
                                         <label class="form-label small fw-bold text-muted mb-1">Options (comma separated)</label>
                                         <input type="text" value="${(field.options || []).join(',')}" onchange="updateField(${index}, 'options', this.value.split(','))" class="form-control form-control-sm" placeholder="Option 1, Option 2, Option 3">
                                     </div>
                                     ` : ''}
+
+                                    <div class="col-12 mt-3 pt-3 border-top">
+                                        <label class="form-label small fw-bold text-primary mb-2">Conditional Visibility (Show if...)</label>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <select onchange="updateField(${index}, 'condition_field', this.value); renderBuilder();" class="form-select form-select-sm" style="max-width: 200px;">
+                                                ${fieldOptions}
+                                            </select>
+                                            <span class="small text-muted">equals</span>
+                                            <input type="text" value="${field.condition_value || ''}" onchange="updateField(${index}, 'condition_value', this.value)" class="form-control form-control-sm" placeholder="Value..." style="max-width: 200px;" ${!field.condition_field ? 'disabled' : ''}>
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });

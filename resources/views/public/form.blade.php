@@ -38,6 +38,8 @@
                 let inputHtml = '';
                 const required = field.required ? 'required' : '';
                 const asterisk = field.required ? '<span class="text-red-500">*</span>' : '';
+                const helpTextHtml = field.help_text ? `<p class="mt-1 text-sm text-gray-500">${field.help_text}</p>` : '';
+                const conditionAttr = field.condition_field ? `data-condition-field="${field.condition_field}" data-condition-value="${field.condition_value}"` : '';
                 
                 if (field.type === 'select') {
                     const optionsHtml = (field.options || []).map(opt => `<option value="${opt}">${opt}</option>`).join('');
@@ -64,17 +66,52 @@
                 }
 
                 container.innerHTML += `
-                    <div class="field-wrapper" id="wrapper-${field.name}">
+                    <div class="field-wrapper transition-all duration-300" id="wrapper-${field.name}" ${conditionAttr}>
                         <label for="${field.name}" class="block text-sm font-semibold text-gray-700">${field.label} ${asterisk}</label>
                         ${inputHtml}
+                        ${helpTextHtml}
                     </div>
                 `;
             });
+            evaluateConditions();
         }
 
-        renderFields();
+        function evaluateConditions() {
+            const formData = new FormData(document.getElementById('dynamic-form'));
+            
+            schema.forEach(field => {
+                if (field.condition_field) {
+                    const wrapper = document.getElementById(`wrapper-${field.name}`);
+                    if (!wrapper) return;
+                    
+                    const depValue = formData.get(field.condition_field);
+                    if (depValue === field.condition_value) {
+                        wrapper.classList.remove('hidden');
+                        if (field.required) {
+                            wrapper.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(i => i.setAttribute('required', 'required'));
+                        }
+                    } else {
+                        wrapper.classList.add('hidden');
+                        wrapper.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(i => i.removeAttribute('required'));
+                    }
+                }
+            });
+        }
 
-        document.getElementById('dynamic-form').addEventListener('submit', async (e) => {
+        try {
+            renderFields();
+            if (schema.length === 0) {
+                container.innerHTML = '<div class="text-red-500">Error: Form schema is empty.</div>';
+            }
+        } catch (e) {
+            container.innerHTML = `<div class="text-red-500">Javascript Error: ${e.message} <br> ${e.stack}</div>`;
+        }
+        
+        const dynamicForm = document.getElementById('dynamic-form');
+        dynamicForm.addEventListener('input', evaluateConditions);
+        dynamicForm.addEventListener('change', evaluateConditions);
+
+        dynamicForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const btn = document.getElementById('submit-btn');

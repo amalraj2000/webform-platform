@@ -15,6 +15,19 @@ class DynamicFormValidator
             $name = $field['name'] ?? null;
             if (!$name) continue;
 
+            // Handle Conditional Logic
+            if (!empty($field['condition_field'])) {
+                $depField = $field['condition_field'];
+                $depVal = $data[$depField] ?? null;
+                $expectedVal = $field['condition_value'] ?? null;
+                
+                if ((string)$depVal !== (string)$expectedVal) {
+                    // Condition not met (field is hidden on frontend). 
+                    // Skip validation and do not include in sanitized data.
+                    continue;
+                }
+            }
+
             $fieldRules = [];
             
             if (isset($field['required']) && $field['required']) {
