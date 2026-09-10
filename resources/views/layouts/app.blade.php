@@ -109,7 +109,7 @@
             
             <!-- Top Header -->
             <header class="bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center sticky-top">
-                <div class="fw-bold fs-5">
+                <div class="fw-bold fs-5 flex-grow-1 me-4">
                     @isset($header)
                         {{ $header }}
                     @endisset

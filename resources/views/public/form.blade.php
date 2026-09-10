@@ -81,6 +81,10 @@
             
             schema.forEach(field => {
                 if (field.condition_field) {
+                    // Check if condition field actually exists in schema
+                    const conditionFieldExists = schema.some(f => f.name === field.condition_field);
+                    if (!conditionFieldExists) return;
+
                     const wrapper = document.getElementById(`wrapper-${field.name}`);
                     if (!wrapper) return;
                     
