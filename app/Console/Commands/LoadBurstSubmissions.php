@@ -2,13 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Form;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
 class LoadBurstSubmissions extends Command
 {
     protected $signature = 'test:burst-submissions {uuid} {count=100}';
+
     protected $description = 'Simulate a massive burst of submissions to test queue saturation and 202 Accepted ingestion.';
 
     public function handle()
@@ -17,8 +18,9 @@ class LoadBurstSubmissions extends Command
         $count = (int) $this->argument('count');
 
         $form = Form::where('uuid', $uuid)->first();
-        if (!$form || !$form->publishedVersion) {
-            $this->error("Form not found or not published.");
+        if (! $form || ! $form->publishedVersion) {
+            $this->error('Form not found or not published.');
+
             return;
         }
 
@@ -43,22 +45,22 @@ class LoadBurstSubmissions extends Command
             }
 
             // Randomize IP to bypass 60req/min rate limiter for load testing
-            $randomIp = rand(1, 255) . '.' . rand(0, 255) . '.' . rand(0, 255) . '.' . rand(0, 255);
+            $randomIp = rand(1, 255).'.'.rand(0, 255).'.'.rand(0, 255).'.'.rand(0, 255);
 
             $response = Http::withHeaders(['X-Forwarded-For' => $randomIp])
-                            ->post($url, $payload);
+                ->post($url, $payload);
 
             if ($response->status() === 202) {
                 $success++;
             } else {
                 $failed++;
                 if ($failed === 1) {
-                    $this->error("First failure: " . $response->body());
+                    $this->error('First failure: '.$response->body());
                 }
             }
         }
 
         $this->info("Burst complete. Success (HTTP 202): {$success}, Failed: {$failed}");
-        $this->info("Check your queue worker to monitor database persistence rate.");
+        $this->info('Check your queue worker to monitor database persistence rate.');
     }
 }

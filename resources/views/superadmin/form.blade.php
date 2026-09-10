@@ -35,7 +35,7 @@
                     <h4 class="h5 m-0 fw-bold">
                         Submissions <span class="badge bg-secondary ms-2">Version: {{ $form->publishedVersion?->version_number ?? 'Draft' }}</span>
                     </h4>
-                    <a href="/admin/forms/{{ $form->id }}/export" class="btn btn-sm btn-success fw-bold">↓ Export CSV</a>
+                    <a href="/company/forms/{{ $form->id }}/export" class="btn btn-sm btn-success fw-bold">↓ Export CSV</a>
                 </div>
                 
                 <div class="card-body p-0">

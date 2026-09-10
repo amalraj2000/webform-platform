@@ -42,7 +42,7 @@ class Form extends Model
     {
         return $this->belongsTo(FormVersion::class, 'published_version_id');
     }
-    
+
     public function submissions()
     {
         return $this->hasManyThrough(Submission::class, FormVersion::class);

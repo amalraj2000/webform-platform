@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Jobs\ProcessFormSubmission;
 use App\Models\Form;
 use App\Services\DynamicFormValidator;
-use App\Jobs\ProcessFormSubmission;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class SubmitFormController extends Controller
 {
     public function store(string $uuid, Request $request)
     {
         $form = Form::where('uuid', $uuid)->firstOrFail();
-        
-        $key = 'submit-form:' . $form->id . ':' . $request->ip();
+
+        $key = 'submit-form:'.$form->id.':'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 60)) {
             return response()->json(['error' => 'Too many requests.'], 429);
         }
@@ -24,7 +24,7 @@ class SubmitFormController extends Controller
 
         $activeVersion = $form->publishedVersion;
 
-        if (!$activeVersion) {
+        if (! $activeVersion) {
             return response()->json(['error' => 'Form not published.'], 403);
         }
 
@@ -33,7 +33,7 @@ class SubmitFormController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -43,7 +43,7 @@ class SubmitFormController extends Controller
 
         return response()->json([
             'status' => 'accepted',
-            'submission_id' => $submissionId
+            'submission_id' => $submissionId,
         ], 202);
     }
 }

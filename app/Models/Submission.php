@@ -11,6 +11,7 @@ class Submission extends Model
     use HasFactory;
 
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = ['id', 'form_version_id', 'data', 'ip_address'];

@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <a href="{{ route('admin.forms.index') }}" class="text-decoration-none text-muted small">&larr; Back to Forms</a>
+                <a href="{{ route('company.forms.index') }}" class="text-decoration-none text-muted small">&larr; Back to Forms</a>
                 <h4 class="mb-0 fw-bold mt-1">{{ $form->title }} - Responses</h4>
             </div>
             <div>
-                <a href="{{ route('admin.forms.export', $form->id) }}" class="btn btn-success fw-bold">↓ Export CSV</a>
+                <a href="{{ route('company.forms.export', $form->id) }}" class="btn btn-success fw-bold">↓ Export CSV</a>
             </div>
         </div>
     </x-slot>
@@ -54,7 +54,7 @@
 
         async function fetchSubmissions(formId) {
             try {
-                const response = await fetch(`/admin/forms/${formId}/submissions`);
+                const response = await fetch(`/company/forms/${formId}/submissions`);
                 const result = await response.json();
                 
                 const headersTr = document.getElementById(`submissions-headers-${formId}`);

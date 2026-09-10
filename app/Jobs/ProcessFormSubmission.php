@@ -2,17 +2,20 @@
 
 namespace App\Jobs;
 
+use App\Models\Submission;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use App\Models\Submission;
 
 class ProcessFormSubmission implements ShouldQueue
 {
     use Queueable;
 
     public $submissionId;
+
     public $formVersionId;
+
     public $data;
+
     public $ipAddress;
 
     public function __construct(string $submissionId, int $formVersionId, array $data, ?string $ipAddress = null)

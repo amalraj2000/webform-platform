@@ -93,18 +93,18 @@
                                         </button>
                                         
                                         <!-- Build Schema Button -->
-                                        <a href="{{ route('admin.forms.builder', $form->id) }}" class="btn btn-sm text-primary p-1" title="Build Schema">
+                                        <a href="{{ route('company.forms.builder', $form->id) }}" class="btn btn-sm text-primary p-1" title="Build Schema">
                                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                         </a>
 
                                         <!-- Responses Button -->
-                                        <a href="{{ route('admin.forms.responses', $form->id) }}" class="btn btn-sm text-info p-1" title="View Responses">
+                                        <a href="{{ route('company.forms.responses', $form->id) }}" class="btn btn-sm text-info p-1" title="View Responses">
                                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                         </a>
 
                                         <!-- Delete Button -->
                                         @if($form->submissions_count === 0)
-                                            <form action="{{ route('admin.forms.destroy', $form->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this form?');" class="d-inline">
+                                            <form action="{{ route('company.forms.destroy', $form->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this form?');" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm text-secondary p-1" title="Delete Form">
@@ -130,7 +130,7 @@
     <!-- Create Form Modal -->
     <div class="modal fade" id="createFormModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <form action="{{ route('admin.forms.store') }}" method="POST" class="modal-content">
+            <form action="{{ route('company.forms.store') }}" method="POST" class="modal-content">
                 @csrf
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold">Create New Form</h5>
@@ -200,7 +200,7 @@
         });
 
         function editForm(id, title, description) {
-            document.getElementById('editFormElement').action = `/admin/forms/${id}`;
+            document.getElementById('editFormElement').action = `/company/forms/${id}`;
             document.getElementById('editFormTitle').value = title;
             document.getElementById('editFormDescription').value = description;
             

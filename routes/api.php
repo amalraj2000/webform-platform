@@ -1,7 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubmitFormController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/v1/forms/{uuid}/submissions', [SubmitFormController::class, 'store']);

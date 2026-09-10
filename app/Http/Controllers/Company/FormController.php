@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Company;
 
 use App\Http\Controllers\Controller;
 use App\Models\Form;
@@ -18,24 +18,24 @@ class FormController extends Controller
             ->join('submissions', 'form_versions.id', '=', 'submissions.form_version_id')
             ->count();
 
-        return view('admin.statistics', compact('formsCount', 'submissionsCount'));
+        return view('company.statistics', compact('formsCount', 'submissionsCount'));
     }
 
     public function index()
     {
         $accountId = auth()->user()->account_id;
         $forms = Form::where('account_id', $accountId)->withCount('submissions')->latest()->get();
-        
+
         $formsCount = $forms->count();
         $publishedCount = $forms->whereNotNull('published_version_id')->count();
         $draftCount = $forms->whereNull('published_version_id')->count();
 
-        return view('admin.forms.index', compact('forms', 'formsCount', 'publishedCount', 'draftCount'));
+        return view('company.forms.index', compact('forms', 'formsCount', 'publishedCount', 'draftCount'));
     }
 
     public function show(Form $form)
     {
-        return redirect()->route('admin.forms.builder', $form->id);
+        return redirect()->route('company.forms.builder', $form->id);
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class FormController extends Controller
             'description' => $validated['description'],
         ]);
 
-        return redirect()->route('admin.forms.builder', $form->id)->with('success', 'Form created successfully.');
+        return redirect()->route('company.forms.builder', $form->id)->with('success', 'Form created successfully.');
     }
 
     public function update(Request $request, Form $form)
@@ -67,7 +67,7 @@ class FormController extends Controller
 
         $form->update($validated);
 
-        return redirect()->route('admin.forms.index')->with('success', 'Form details updated.');
+        return redirect()->route('company.forms.index')->with('success', 'Form details updated.');
     }
 
     public function destroy(Form $form)
@@ -77,13 +77,13 @@ class FormController extends Controller
         }
 
         if ($form->submissions()->count() > 0) {
-            return redirect()->route('admin.forms.index')->with('error', 'Cannot delete a form that has submissions.');
+            return redirect()->route('company.forms.index')->with('error', 'Cannot delete a form that has submissions.');
         }
 
         $form->versions()->delete();
         $form->delete();
 
-        return redirect()->route('admin.forms.index')->with('success', 'Form deleted successfully.');
+        return redirect()->route('company.forms.index')->with('success', 'Form deleted successfully.');
     }
 
     public function builder(Form $form)
@@ -94,7 +94,7 @@ class FormController extends Controller
 
         $form->load('publishedVersion');
 
-        return view('admin.forms.builder', compact('form'));
+        return view('company.forms.builder', compact('form'));
     }
 
     public function responses(Form $form)
@@ -105,7 +105,7 @@ class FormController extends Controller
 
         $form->load('publishedVersion');
 
-        return view('admin.forms.responses', compact('form'));
+        return view('company.forms.responses', compact('form'));
     }
 
     public function publishVersion(Request $request, Form $form)

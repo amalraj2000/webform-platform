@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <a href="{{ route('admin.forms.index') }}" class="text-decoration-none text-muted small">&larr; Back to Forms</a>
+                <a href="{{ route('company.forms.index') }}" class="text-decoration-none text-muted small">&larr; Back to Forms</a>
                 <h4 class="mb-0 fw-bold mt-1">{{ $form->title }} - Schema Builder</h4>
             </div>
             <div>
-                <a href="{{ route('admin.forms.responses', $form->id) }}" class="btn btn-outline-secondary fw-bold me-2">View Responses</a>
+                <a href="{{ route('company.forms.responses', $form->id) }}" class="btn btn-outline-secondary fw-bold me-2">View Responses</a>
             </div>
         </div>
     </x-slot>
@@ -214,7 +214,7 @@
             if (!result.isConfirmed) return;
             
             try {
-                const response = await fetch(`/admin/forms/${formId}/publish`, {
+                const response = await fetch(`/company/forms/${formId}/publish`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

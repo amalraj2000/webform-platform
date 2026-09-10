@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('account_id')->constrained()->cascadeOnDelete();
             $table->uuid('uuid')->unique();
             $table->string('title');
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('published_version_id')->nullable();
             $table->timestamps();
         });
