@@ -18,7 +18,7 @@ class SuperAdminController extends Controller
         $accounts = Account::withCount('forms')->get();
         $totalSubmissions = Submission::count();
 
-        return view('supercompany.dashboard', compact('accounts', 'totalSubmissions'));
+        return view('superadmin.dashboard', compact('accounts', 'totalSubmissions'));
     }
 
     public function accounts()
@@ -28,7 +28,7 @@ class SuperAdminController extends Controller
         }
         $accounts = Account::withCount('forms')->get();
 
-        return view('supercompany.account', compact('accounts'));
+        return view('superadmin.account', compact('accounts'));
     }
 
     public function showAccount(Account $account)
@@ -39,7 +39,7 @@ class SuperAdminController extends Controller
         $accounts = Account::withCount('forms')->get();
         $account->load('forms');
 
-        return view('supercompany.account', compact('accounts', 'account'));
+        return view('superadmin.account', compact('accounts', 'account'));
     }
 
     public function showForm(Form $form)
@@ -51,6 +51,6 @@ class SuperAdminController extends Controller
         $form->load('publishedVersion.submissions');
         $account = $form->account;
 
-        return view('supercompany.form', compact('accounts', 'account', 'form'));
+        return view('superadmin.form', compact('accounts', 'account', 'form'));
     }
 }
