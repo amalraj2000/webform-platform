@@ -37,12 +37,62 @@ To handle a massive amount of traffic without crashing (like 10,000+ people subm
 
 ---
 
-## 🚀 Quick Test Guide
+## 🛠️ Setup Guide
 
-1. Follow the setup instructions in the `README.md` to start the server.
-2. Go to `http://localhost:8000` and click "Sign into Dashboard".
-3. Log in with `superadmin@gmail.com` / `password`.
-4. Create a new form and add a few fields (try adding a Conditional field!).
-5. Click "Publish Version".
-6. Click "Open Public Form" and try filling it out yourself.
-7. Go back to your Admin Dashboard and click the "Refresh" button under Recent Submissions to see your data instantly appear!
+Follow these steps to set up the project entirely within Docker (no local PHP or Node.js required):
+
+1. **Clone the repository**:
+   Open your terminal and run:
+   ```bash
+   git clone https://github.com/amalraj2000/webform-platform.git
+   cd webform-platform
+   ```
+
+2. **Install Composer Dependencies (Docker Only)**:
+   Use a temporary Docker container to install the PHP vendor dependencies:
+   ```bash
+   docker run --rm \
+       -u "$(id -u):$(id -g)" \
+       -v "$(pwd):/var/www/html" \
+       -w /var/www/html \
+       laravelsail/php84-composer:latest \
+       composer install --ignore-platform-reqs
+   ```
+
+3. **Environment Setup**:
+   Create a `.env` file from the sample file:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Start the Docker Containers**:
+   Use Laravel Sail to spin up the application server, MySQL, and Redis:
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
+
+5. **Generate App Key, Migrate, and Seed Database**:
+   Run the Artisan commands inside your running Sail container:
+   ```bash
+   ./vendor/bin/sail artisan key:generate
+   ./vendor/bin/sail artisan migrate:fresh --seed
+   ```
+
+6. **Install NPM Dependencies and Build Assets**:
+   Compile the frontend assets inside the Sail container:
+   ```bash
+   ./vendor/bin/sail npm install
+   ./vendor/bin/sail npm run build
+   ```
+
+7. **Start the Queue Worker**:
+   The form pipeline relies on asynchronous queues. Start a worker to process them:
+   ```bash
+   ./vendor/bin/sail artisan queue:work
+   ```
+
+8. **Start Working & Testing**:
+   - The application is now accessible at **`http://localhost`** *(Sail exposes the app on port 80 automatically)*.
+   - **Company Registration & Login**: You can register a new company account and log in.
+   - **Form Creation**: Once logged in, you can create new forms, add conditional fields, and test submitting them by publishing the form and opening the public link.
+   - **Superadmin Dashboard**: You can log in as a superadmin (use `superadmin@gmail.com` / `password`) to monitor the platform, allowing you to see all registered companies and their forms.
